@@ -86,10 +86,6 @@ I also learned that search and filter changes should reset pagination to page 1,
 - [Vite documentation](https://vitejs.dev/guide/) — setup, dev server, and production build
 - [The Markdown Guide](https://www.markdownguide.org/) — formatting this README
 
-What worked well: breaking the app into small, focused modules (utils, context, components) and having AI generate consistent JSDoc comments across files.
-
-What needed manual review: ensuring pagination reset behaviour was correct, verifying genre ID mapping matched `data.js`, and checking that all controls stayed in sync together.
-
 ## Author
 
 - GitHub - [@Nthabi2905](https://github.com/yourusername)
