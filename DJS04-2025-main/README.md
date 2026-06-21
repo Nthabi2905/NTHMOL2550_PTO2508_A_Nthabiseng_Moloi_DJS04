@@ -1,97 +1,111 @@
 # DSJ04 React Podcast App
 
-An advanced podcast browsing experience built with React. Browse shows from the [Podcast API](https://podcast-api.netlify.app) with live search, sorting, genre filtering, and pagination — all synchronised through centralised state.
+This is a solution to the **DSJ04 React Podcast App** coursework project — an advanced podcast browsing experience with search, sort, filter, and pagination. The app fetches data from the [Podcast API](https://podcast-api.netlify.app) and lets users explore shows with real-time, synchronised controls.
 
-## Features
+## Table of contents
 
-### Search
-- Live title search that matches any part of the podcast name (case-insensitive).
-- Results update as you type without resetting sort, filters, or page selection unnecessarily.
-- Changing the search query resets to page 1 so you always see relevant results first.
+- [Overview](#overview)
+  - [The challenge](#the-challenge)
+  - [Screenshot](#screenshot)
+- [My process](#my-process)
+  - [Built with](#built-with)
+  - [What I learned](#what-i-learned)
+  - [Continued development](#continued-development)
+  - [Useful resources](#useful-resources)
+  - [AI Collaboration](#ai-collaboration)
+- [Author](#author)
+- [Acknowledgments](#acknowledgments)
 
-### Sort
-- **Newest first** — sorted by last updated date.
-- **Title A–Z** and **Title Z–A** — alphabetical sorting.
-- Sorting works together with active search and genre filters.
+## Overview
 
-### Filter
-- Multi-select genre filter using pill-style checkboxes.
-- Genre titles are mapped from `src/data/genres.js` (the API only returns genre IDs).
-- Selected filters persist while navigating between pages.
-- "Clear filters" button appears when one or more genres are active.
+### The challenge
 
-### Pagination
-- Shows 12 podcasts per page with Previous/Next controls and numbered pages.
-- Displays a result summary (e.g. "Showing 1–12 of 46").
-- Pagination respects the current search, sort, and filter state.
+Users should be able to:
 
-## Setup
+- View a list of podcasts fetched from the remote API
+- Search podcasts by title with results updating as they type
+- Sort podcasts by newest first, title A–Z, or title Z–A
+- Filter podcasts by one or more genres using a multi-select control
+- Paginate through results without losing active search, sort, or filter state
+- See a responsive layout that works across different screen sizes
+- See hover and focus states on all interactive elements
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or later recommended)
-- npm
+### Screenshot
 
-### Installation
+![](./screenshot.png)
 
-```bash
-npm install
+## My process
+
+### Built with
+
+- Semantic HTML5 markup
+- CSS custom properties
+- CSS Grid & Flexbox
+- Mobile-first responsive workflow
+- [React](https://reactjs.org/) — UI library
+- [Vite](https://vitejs.dev/) — build tool and dev server
+- React Context — centralised state management
+- Plain CSS — no UI framework
+
+### What I learned
+
+This project reinforced how to keep multiple UI controls in sync without them fighting each other. The key was separating **data processing** (search → filter → sort → paginate) from **UI state** (what the user has selected).
+
+The processing pipeline lives in pure utility functions, which makes it easy to test and reason about:
+
+```js
+export function processPodcasts(podcasts, { searchQuery, selectedGenres, sortBy }) {
+  const searched = filterBySearch(podcasts, searchQuery);
+  const filtered = filterByGenres(searched, selectedGenres);
+  return sortPodcasts(filtered, sortBy);
+}
 ```
 
-### Development
+Centralised state in React Context keeps every control reading from the same source of truth:
 
-```bash
-npm run dev
+```jsx
+const processedPodcasts = useMemo(
+  () => processPodcasts(podcasts, { searchQuery, selectedGenres, sortBy }),
+  [podcasts, searchQuery, selectedGenres, sortBy]
+);
 ```
 
-Open the URL shown in the terminal (typically `http://localhost:5173`).
+I also learned that search and filter changes should reset pagination to page 1, while page navigation should preserve all other selections — a small but important UX detail.
 
-### Production build
+### Continued development
 
-```bash
-npm run build
-npm run preview
-```
+- Add URL query parameters so search, sort, filter, and page state can be shared via a link
+- Write unit tests for the utility functions in `podcastUtils.js`
+- Add a loading skeleton instead of plain text while podcasts fetch
+- Consider debouncing the search input for larger datasets
 
-## Project structure
+### Useful resources
 
-```
-src/
-├── components/       # Reusable UI components
-│   ├── Controls.jsx
-│   ├── GenreFilter.jsx
-│   ├── Pagination.jsx
-│   ├── PodcastCard.jsx
-│   ├── PodcastList.jsx
-│   ├── SearchBar.jsx
-│   └── SortControls.jsx
-├── context/
-│   └── PodcastContext.jsx   # Centralised app state
-├── data/
-│   └── genres.js            # Genre ID → title mapping
-├── services/
-│   └── api.js               # API fetch logic
-├── utils/
-│   └── podcastUtils.js      # Search, sort, filter, paginate helpers
-├── App.jsx
-└── main.jsx
-```
+- [Podcast API](https://podcast-api.netlify.app) — source of all podcast preview data used in this project
+- [React Context documentation](https://react.dev/reference/react/useContext) — helped with structuring centralised app state
+- [Vite documentation](https://vitejs.dev/guide/) — setup, dev server, and production build
+- [The Markdown Guide](https://www.markdownguide.org/) — formatting this README
 
-## API
+### AI Collaboration
 
-Podcast data is fetched from:
+I used **Cursor (AI-assisted IDE)** during this project.
 
-```
-https://podcast-api.netlify.app
-```
+- **Scaffolding** — generated the initial Vite + React project structure and file layout
+- **Boilerplate** — helped write utility functions, context provider, and component stubs
+- **Styling** — assisted with the responsive CSS layout and dark theme
+- **Documentation** — helped draft and structure this README
 
-Each podcast preview includes `id`, `title`, `description`, `seasons`, `image`, `genres` (array of IDs), and `updated` (ISO date string).
+What worked well: breaking the app into small, focused modules (utils, context, components) and having AI generate consistent JSDoc comments across files.
 
-## Tech stack
+What needed manual review: ensuring pagination reset behaviour was correct, verifying genre ID mapping matched `data.js`, and checking that all controls stayed in sync together.
 
-- React 19
-- Vite 6
-- Plain CSS (no UI framework)
+## Author
 
-## License
+- GitHub - [@yourusername](https://github.com/yourusername)
+- LinkedIn - [Add your name here](https://www.linkedin.com/in/yourprofile)
 
-Educational project for DJS04 coursework.
+## Acknowledgments
+
+- Course materials and brief for the DSJ04 React Podcast App project
+- [Podcast API](https://podcast-api.netlify.app) for providing the preview data
+- Genre metadata supplied in the project `data.js` file
